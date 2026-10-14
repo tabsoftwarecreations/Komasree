@@ -1,0 +1,681 @@
+/* ============================================================
+   FRIENDSHIP SIMULATOR STYLES
+   Choreographed character animations, comic FX, and mobile layout
+   ============================================================ */
+
+/* --- Simulator Card Layout (Zero Overlap on Mobile) --- */
+.simulator-card {
+  padding: 1rem 1.1rem 1.25rem !important;
+  max-width: 480px;
+}
+
+.simulator-card .scene-emoji {
+  font-size: 1.6rem;
+  margin-bottom: 0.1rem;
+}
+
+.simulator-card .scene-title {
+  font-size: clamp(1.2rem, 3.8vw, 1.5rem);
+  margin-bottom: 0.1rem;
+}
+
+.simulator-card .scene-subtitle {
+  font-size: clamp(0.82rem, 2vw, 0.9rem);
+  margin-bottom: 0.4rem;
+}
+
+.simulator-card .action-grid {
+  margin-bottom: 0.4rem;
+  gap: 7px;
+}
+
+.simulator-card .btn-action {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.simulator-reaction-popup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.5rem 0.85rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.reaction-popup-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.reaction-popup-text {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.simulator-card .btn-primary {
+  padding: 0.6rem 1.5rem;
+  font-size: 0.88rem;
+}
+
+/* --- Simulator Stage --- */
+.simulator-stage {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 170px;
+  margin: 0 auto 0.5rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #F8F2FF 0%, #FFF5FA 65%, #F0E8FA 100%);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 2px 10px rgba(61, 43, 79, 0.04),
+    0 6px 24px rgba(255, 120, 168, 0.12);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Floor line inside stage */
+.simulator-stage::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background: linear-gradient(180deg, rgba(230, 218, 245, 0.5) 0%, rgba(215, 200, 235, 0.8) 100%);
+  border-top: 1.5px dashed rgba(184, 158, 245, 0.45);
+  z-index: 0;
+}
+
+/* Stage Screen Shake on Punch */
+.simulator-stage.stage-shake {
+  animation: stage-rumble 0.28s ease-in-out;
+}
+
+@keyframes stage-rumble {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-4px, 2px); }
+  40% { transform: translate(4px, -3px); }
+  60% { transform: translate(-3px, 1px); }
+  80% { transform: translate(2px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* --- Character Base Wrappers (Absolute within stage) --- */
+.character-wrapper {
+  position: absolute;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.character-svg {
+  filter: drop-shadow(0 4px 8px rgba(61, 43, 79, 0.08));
+  display: block;
+}
+
+/* Ground Shadows */
+.character-shadow,
+.dog-shadow {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 7px;
+  background: radial-gradient(ellipse, rgba(61, 43, 79, 0.18) 0%, transparent 75%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- Koma Poses & Transitions --- */
+.koma-wrapper {
+  left: 20%;
+  transform-origin: bottom center;
+}
+
+.koma-wrapper.pose-punch_prep {
+  transform: translateX(16px) rotate(4deg);
+  transition: transform 0.25s ease-out;
+}
+
+.koma-wrapper.pose-punch_strike {
+  transform: translateX(65px) rotate(7deg);
+  transition: transform 0.14s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.koma-wrapper.pose-dog_alert {
+  transform: translateY(-8px);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.koma-wrapper.pose-dog_run {
+  transform: translateX(-58px) rotate(-6deg);
+  transition: transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.koma-wrapper.pose-dog_peek {
+  transform: translateX(-52px) rotate(2deg);
+  transition: transform 0.3s ease;
+}
+
+.koma-wrapper.pose-snack {
+  transform: translateX(18px) scale(1.02);
+  transition: transform 0.35s ease;
+}
+
+.koma-wrapper.pose-innocent {
+  animation: innocent-sway 2.5s ease-in-out infinite;
+}
+
+@keyframes innocent-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+
+/* Koma Running Leg Animations */
+.pose-dog_run .koma-leg-left {
+  animation: koma-leg-cycle 0.16s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+
+.pose-dog_run .koma-leg-right {
+  animation: koma-leg-cycle 0.16s ease-in-out infinite alternate-reverse;
+  transform-origin: top center;
+}
+
+@keyframes koma-leg-cycle {
+  0% { transform: rotate(-25deg); }
+  100% { transform: rotate(25deg); }
+}
+
+/* --- Abdul Poses & Transitions --- */
+.abdul-wrapper {
+  left: 62%;
+  transform-origin: bottom center;
+}
+
+.abdul-wrapper.pose-punch_prep {
+  transform: translateX(-4px) rotate(-2deg);
+  transition: transform 0.25s ease;
+}
+
+.abdul-wrapper.pose-punch_recoil {
+  transform: translateX(38px) rotate(-22deg) scale(0.95);
+  transition: transform 0.18s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.abdul-wrapper.pose-punch_dizzy {
+  transform: translateX(20px) rotate(3deg);
+  animation: abdul-dizzy-wobble 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes abdul-dizzy-wobble {
+  0% { transform: translateX(18px) rotate(-3deg); }
+  100% { transform: translateX(24px) rotate(4deg); }
+}
+
+.abdul-wrapper.pose-snack {
+  transform: translateX(-18px) scale(1.02);
+  transition: transform 0.35s ease;
+}
+
+/* Waving arm */
+.abdul-waving-arm {
+  transform-origin: 68px 70px;
+  animation: abdul-wave 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes abdul-wave {
+  0% { transform: rotate(-6deg); }
+  100% { transform: rotate(12deg); }
+}
+
+/* --- Overlays & Accents --- */
+/* Innocent Floating Halo */
+.character-halo {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: halo-float 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.7));
+}
+
+@keyframes halo-float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+/* Alert Bubble */
+.character-alert-bubble {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  font-size: 1.5rem;
+  animation: pop-alert 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  filter: drop-shadow(0 2px 4px rgba(255, 71, 103, 0.3));
+}
+
+@keyframes pop-alert {
+  0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Sweat Drops */
+.character-sweat-drop {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  font-size: 1.2rem;
+  animation: sweat-drip 0.5s ease infinite alternate;
+}
+
+.abdul-sweat {
+  left: 10px;
+  right: auto;
+}
+
+@keyframes sweat-drip {
+  0% { transform: translateY(0) scale(0.9); }
+  100% { transform: translateY(4px) scale(1.1); }
+}
+
+/* Dizzy Stars Orbit */
+.character-dizzy-stars {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  font-size: 1.1rem;
+  animation: stars-orbit 1s ease-in-out infinite alternate;
+}
+
+@keyframes stars-orbit {
+  0% { transform: translateX(-50%) translateY(0) rotate(-6deg); }
+  100% { transform: translateX(-50%) translateY(-5px) rotate(6deg); }
+}
+
+/* --- Comic Impact (Punch POW!) --- */
+.comic-impact-fx {
+  position: absolute;
+  top: 42%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
+  animation: impact-pop 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+}
+
+.impact-starburst {
+  background: linear-gradient(135deg, #FF3D68, #FF8F00);
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.03em;
+  box-shadow:
+    0 0 0 4px #FFFFFF,
+    0 0 20px rgba(255, 61, 104, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@keyframes impact-pop {
+  0% { transform: translate(-50%, -50%) scale(0) rotate(-20deg); opacity: 0; }
+  45% { transform: translate(-50%, -50%) scale(1.3) rotate(8deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* --- Snack Break Props & Receipt --- */
+.snack-container {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: snack-bounce 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes snack-bounce {
+  0% { transform: translateX(-50%) translateY(40px) scale(0.4); opacity: 0; }
+  70% { transform: translateX(-50%) translateY(-8px) scale(1.1); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+
+.snack-sparkles {
+  position: absolute;
+  top: -12px;
+  font-size: 1rem;
+  animation: float-sparkle 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes float-sparkle {
+  0% { transform: translateY(0) scale(0.9); }
+  100% { transform: translateY(-6px) scale(1.2); }
+}
+
+/* Receipt Card (Slides into scene) */
+.receipt-card {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 300px;
+  background: #FFFDF9;
+  border: 1px solid #EADBCE;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  box-shadow: 0 8px 24px rgba(61, 43, 79, 0.12);
+  z-index: 8;
+  font-family: 'Consolas', monospace;
+  font-size: 0.76rem;
+  color: #4A3728;
+  text-align: left;
+  animation: receipt-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.receipt-header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-align: center;
+  color: var(--pink-600);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  padding-bottom: 3px;
+  border-bottom: 1px dashed #D6C2B4;
+  margin-bottom: 4px;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 2px 0;
+  line-height: 1.35;
+}
+
+.receipt-footer {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed #D6C2B4;
+  text-align: center;
+  font-weight: 600;
+  color: #2E7D32;
+  font-size: 0.74rem;
+}
+
+@keyframes receipt-slide {
+  0% { transform: translateX(-50%) translateY(-25px); opacity: 0; }
+  100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+/* --- Team Leader Dialogue & Innocent Stamp --- */
+.team-leader-alert {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 55%;
+  max-width: 230px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid var(--lavender-200);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  box-shadow: 0 4px 16px rgba(61, 43, 79, 0.08);
+  z-index: 8;
+  animation: bubble-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  text-align: left;
+}
+
+.tl-header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.tl-body {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.koma-speech-bubble {
+  position: absolute;
+  top: 16px;
+  left: 10px;
+  background: white;
+  border: 1.5px solid var(--pink-300);
+  border-radius: var(--radius-md);
+  padding: 5px 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--pink-600);
+  box-shadow: 0 4px 12px rgba(255, 92, 148, 0.15);
+  z-index: 9;
+  animation: bubble-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.koma-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 16px;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-right: 1.5px solid var(--pink-300);
+  border-bottom: 1.5px solid var(--pink-300);
+  transform: rotate(45deg);
+}
+
+@keyframes bubble-in {
+  0% { transform: scale(0.6) translateY(8px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Investigation Status Stamp */
+.case-status-stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-7deg);
+  border: 3px dashed #E53935;
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  background: rgba(255, 245, 245, 0.94);
+  box-shadow: 0 6px 20px rgba(229, 57, 53, 0.22);
+  z-index: 10;
+  animation: stamp-drop 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+  text-align: center;
+}
+
+.stamp-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: #D32F2F;
+  letter-spacing: 0.08em;
+}
+
+.stamp-sub {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #B71C1C;
+}
+
+@keyframes stamp-drop {
+  0% { transform: translate(-50%, -50%) scale(2.2) rotate(25deg); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(-7deg); opacity: 1; }
+}
+
+/* --- Friendly Dog Walking / Sitting Animation --- */
+.friendly-dog-wrapper {
+  position: absolute;
+  bottom: 8px;
+  right: -80px;
+  z-index: 3;
+  transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.4, 1);
+  will-change: transform;
+}
+
+.friendly-dog-wrapper.dog-entered {
+  transform: translateX(-140px);
+}
+
+.dog-walking .dog-paws-front {
+  animation: dog-trot 0.22s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+
+.dog-walking .dog-tail {
+  animation: dog-wag 0.18s ease-in-out infinite alternate;
+  transform-origin: 60px 38px;
+}
+
+.dog-sitting .dog-tail {
+  animation: dog-wag 0.25s ease-in-out infinite alternate;
+  transform-origin: 60px 38px;
+}
+
+@keyframes dog-trot {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
+}
+
+@keyframes dog-wag {
+  0% { transform: rotate(-15deg); }
+  100% { transform: rotate(20deg); }
+}
+
+/* Running Dust Clouds */
+.running-dust {
+  position: absolute;
+  bottom: 12px;
+  left: 18%;
+  font-size: 1.4rem;
+  animation: dust-puff 0.5s ease-out both;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes dust-puff {
+  0% { transform: scale(0.3) translateX(0); opacity: 0.8; }
+  100% { transform: scale(1.3) translateX(25px); opacity: 0; }
+}
+
+/* --- Action Button Active State Highlights --- */
+.btn-action.btn-action-active {
+  background: linear-gradient(135deg, var(--pink-100), var(--lavender-100));
+  border-color: var(--pink-400);
+  box-shadow: 0 0 16px rgba(255, 92, 148, 0.35);
+  font-weight: 700;
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 440px) {
+  .simulator-card {
+    padding: 0.85rem 0.85rem 1rem !important;
+  }
+
+  .simulator-stage {
+    height: 155px;
+  }
+
+  .character-svg {
+    width: 72px;
+    height: 100px;
+  }
+
+  .dog-svg {
+    width: 55px;
+    height: 48px;
+  }
+
+  .koma-wrapper {
+    left: 14%;
+  }
+
+  .abdul-wrapper {
+    left: 58%;
+  }
+
+  .koma-wrapper.pose-punch_strike {
+    transform: translateX(48px) rotate(7deg);
+  }
+
+  .abdul-wrapper.pose-punch_recoil {
+    transform: translateX(28px) rotate(-20deg) scale(0.95);
+  }
+
+  .friendly-dog-wrapper.dog-entered {
+    transform: translateX(-110px);
+  }
+
+  .koma-wrapper.pose-dog_run {
+    transform: translateX(-40px) rotate(-6deg);
+  }
+
+  .koma-wrapper.pose-dog_peek {
+    transform: translateX(-35px) rotate(2deg);
+  }
+
+  .receipt-card {
+    font-size: 0.70rem;
+    padding: 6px 10px;
+    top: 6px;
+    max-width: 260px;
+  }
+
+  .team-leader-alert {
+    width: 60%;
+    font-size: 0.72rem;
+    padding: 5px 8px;
+    top: 6px;
+    right: 8px;
+  }
+
+  .koma-speech-bubble {
+    font-size: 0.72rem;
+    padding: 4px 8px;
+    top: 12px;
+    left: 6px;
+  }
+}
+
+/* Prefers-reduced-motion compatibility */
+@media (prefers-reduced-motion: reduce) {
+  .simulator-stage,
+  .character-wrapper,
+  .friendly-dog-wrapper,
+  .comic-impact-fx,
+  .receipt-card,
+  .case-status-stamp {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
