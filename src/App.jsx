@@ -445,39 +445,11 @@ const memories = [
 ];
 
 function MemoryScrapbook({ goNext }) {
-  const [activePhotoIndex, setActivePhotoIndex] = useState(null);
-
-  const activePhoto = activePhotoIndex !== null ? memories[activePhotoIndex] : null;
-
-  const showNextPhoto = (e) => {
-    e?.stopPropagation();
-    setActivePhotoIndex((prev) => (prev + 1) % memories.length);
-  };
-
-  const showPrevPhoto = (e) => {
-    e?.stopPropagation();
-    setActivePhotoIndex((prev) => (prev - 1 + memories.length) % memories.length);
-  };
-
-  useEffect(() => {
-    if (activePhotoIndex === null) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setActivePhotoIndex(null);
-      if (e.key === 'ArrowRight') showNextPhoto();
-      if (e.key === 'ArrowLeft') showPrevPhoto();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activePhotoIndex]);
-
   return (
     <Scene bg="bg-scrapbook">
       <span className="scene-emoji" style={{ position: 'relative', zIndex: 1 }}>📸</span>
       <h2 className="scene-title" style={{ position: 'relative', zIndex: 1, marginBottom: 'var(--space-sm)' }}>Little Moments, Big Memories</h2>
       <p className="scene-subtitle" style={{ position: 'relative', zIndex: 1 }}>Every great friendship is made of tiny, hilarious moments.</p>
-      <p style={{ position: 'relative', zIndex: 1, fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 'var(--space-md)' }}>
-        ✨ Tap any photo to see it in full view!
-      </p>
 
       <div className="scrapbook-grid" style={{ position: 'relative', zIndex: 1 }}>
         {memories.map((m, i) => (
@@ -488,11 +460,6 @@ function MemoryScrapbook({ goNext }) {
             initial={{ opacity: 0, y: 30, rotate: 0 }}
             animate={{ opacity: 1, y: 0, rotate: parseFloat(m.rotate) }}
             transition={{ delay: 0.1 * i, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
-            onClick={() => setActivePhotoIndex(i)}
-            role="button"
-            tabIndex={0}
-            aria-label={`View ${m.caption}`}
-            onKeyDown={(e) => { if (e.key === 'Enter') setActivePhotoIndex(i); }}
           >
             <div className="scrapbook-photo-wrapper">
               {m.badge && <span className="scrapbook-badge">{m.badge}</span>}
@@ -503,72 +470,11 @@ function MemoryScrapbook({ goNext }) {
                 style={{ objectPosition: m.objectPosition || 'center 15%' }}
                 loading="lazy"
               />
-              <span className="scrapbook-zoom-hint">🔍 Tap</span>
             </div>
             <span className="scrapbook-caption">{m.caption}</span>
           </motion.div>
         ))}
       </div>
-
-      {/* Fullscreen Photo Lightbox Modal */}
-      <AnimatePresence>
-        {activePhoto && (
-          <motion.div
-            className="photo-lightbox-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setActivePhotoIndex(null)}
-          >
-            <motion.div
-              className="photo-lightbox-container"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="photo-lightbox-close"
-                onClick={() => setActivePhotoIndex(null)}
-                aria-label="Close photo preview"
-              >
-                ✕
-              </button>
-
-              <div className="photo-lightbox-img-wrap">
-                <img
-                  src={activePhoto.photo}
-                  alt={activePhoto.caption}
-                  className="photo-lightbox-img"
-                />
-              </div>
-
-              <div className="photo-lightbox-info">
-                <span className="photo-lightbox-caption">{activePhoto.caption}</span>
-                <div className="photo-lightbox-nav">
-                  <span className="photo-lightbox-counter">{activePhotoIndex + 1} / {memories.length}</span>
-                  <button
-                    className="photo-lightbox-nav-btn"
-                    onClick={showPrevPhoto}
-                    aria-label="Previous photo"
-                  >
-                    ←
-                  </button>
-                  <button
-                    className="photo-lightbox-nav-btn"
-                    onClick={showNextPhoto}
-                    aria-label="Next photo"
-                  >
-                    →
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <motion.button
         className="btn btn-primary"
