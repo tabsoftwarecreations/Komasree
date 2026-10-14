@@ -370,45 +370,205 @@ function BirthdayReveal({ goNext }) {
 //  SCENE 5: MEMORY SCRAPBOOK
 // ════════════════════════════════════════════════════════════
 const memories = [
-  { photo: '/photos/office-gang.png', caption: 'The office gang — our little family', rotate: '-2deg' },
-  { photo: '/photos/birthday-celebration.jpg', caption: 'Birthday vibes with the crew 🎂', rotate: '1.5deg' },
-  { photo: '/photos/koma-father.jpg', caption: 'Daddy\'s girl forever — with her father ❤️', rotate: '-1.5deg' },
-  { photo: '/photos/koma-mother.jpg', caption: 'Moments of warmth & love with Amma 🌸', rotate: '2deg' },
-  { photo: '/photos/koma-childhood-ai.jpg', caption: 'Looking back at little Koma — childhood memories ✨', rotate: '-2deg' },
-  { photo: '/photos/retro-koma.jpg', caption: 'Back to the 80\'s — Koma edition 🎸', rotate: '-1deg' },
-  { photo: '/photos/staircase-squad.jpg', caption: 'Staircase hangouts between meetings', rotate: '2deg' },
-  { photo: '/photos/koma-childhood.jpg', caption: 'Little Koma — where it all started 🥹', rotate: '-1.5deg' },
-  { photo: '/photos/koma-portrait.jpg', caption: 'The one and only Komasree 💗', rotate: '1deg' },
-  { photo: '/photos/friendship-bracelet.jpg', caption: 'A little something made with love', rotate: '1.5deg' },
+  {
+    photo: '/photos/koma-portrait.jpg',
+    caption: 'The one and only Komasree 💗',
+    rotate: '-1deg',
+    objectPosition: 'center 12%',
+    badge: '👑 Star of the Day',
+  },
+  {
+    photo: '/photos/koma-father.jpg',
+    caption: "Daddy's girl forever — with her father ❤️",
+    rotate: '1.5deg',
+    objectPosition: 'center 10%',
+    badge: '❤️ Family',
+  },
+  {
+    photo: '/photos/koma-mother.jpg',
+    caption: 'Moments of warmth & love with Amma 🌸',
+    rotate: '-1.5deg',
+    objectPosition: 'center 10%',
+    badge: '🌸 Warmth',
+  },
+  {
+    photo: '/photos/office-gang.png',
+    caption: 'The office gang — our little family',
+    rotate: '1deg',
+    objectPosition: 'center 18%',
+    span: 2,
+    badge: '💼 Office Gang',
+  },
+  {
+    photo: '/photos/birthday-celebration.jpg',
+    caption: 'Birthday vibes with the crew 🎂',
+    rotate: '-1.5deg',
+    objectPosition: 'center 18%',
+    badge: '🎂 Celebration',
+  },
+  {
+    photo: '/photos/staircase-squad.jpg',
+    caption: 'Staircase hangouts between meetings',
+    rotate: '1.5deg',
+    objectPosition: 'center 28%',
+    span: 2,
+    badge: '☕ Squad Goals',
+  },
+  {
+    photo: '/photos/koma-childhood-ai.jpg',
+    caption: 'Looking back at little Koma — childhood memories ✨',
+    rotate: '-2deg',
+    objectPosition: 'center 12%',
+    badge: '✨ Nostalgia',
+  },
+  {
+    photo: '/photos/koma-childhood.jpg',
+    caption: 'Little Koma — where it all started 🥹',
+    rotate: '1.5deg',
+    objectPosition: 'center 15%',
+    badge: '🥹 Precious',
+  },
+  {
+    photo: '/photos/retro-koma.jpg',
+    caption: "Back to the 80's — Koma edition 🎸",
+    rotate: '-1deg',
+    objectPosition: 'center 10%',
+    badge: '🎸 Retro Vibes',
+  },
+  {
+    photo: '/photos/friendship-bracelet.jpg',
+    caption: 'A little something made with love',
+    rotate: '1deg',
+    objectPosition: 'center 45%',
+    badge: '🎀 Forever Friends',
+  },
 ];
 
 function MemoryScrapbook({ goNext }) {
+  const [activePhotoIndex, setActivePhotoIndex] = useState(null);
+
+  const activePhoto = activePhotoIndex !== null ? memories[activePhotoIndex] : null;
+
+  const showNextPhoto = (e) => {
+    e?.stopPropagation();
+    setActivePhotoIndex((prev) => (prev + 1) % memories.length);
+  };
+
+  const showPrevPhoto = (e) => {
+    e?.stopPropagation();
+    setActivePhotoIndex((prev) => (prev - 1 + memories.length) % memories.length);
+  };
+
+  useEffect(() => {
+    if (activePhotoIndex === null) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setActivePhotoIndex(null);
+      if (e.key === 'ArrowRight') showNextPhoto();
+      if (e.key === 'ArrowLeft') showPrevPhoto();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activePhotoIndex]);
+
   return (
     <Scene bg="bg-scrapbook">
       <span className="scene-emoji" style={{ position: 'relative', zIndex: 1 }}>📸</span>
       <h2 className="scene-title" style={{ position: 'relative', zIndex: 1, marginBottom: 'var(--space-sm)' }}>Little Moments, Big Memories</h2>
       <p className="scene-subtitle" style={{ position: 'relative', zIndex: 1 }}>Every great friendship is made of tiny, hilarious moments.</p>
+      <p style={{ position: 'relative', zIndex: 1, fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 'var(--space-md)' }}>
+        ✨ Tap any photo to see it in full view!
+      </p>
 
       <div className="scrapbook-grid" style={{ position: 'relative', zIndex: 1 }}>
         {memories.map((m, i) => (
           <motion.div
             key={i}
-            className="scrapbook-item"
+            className={`scrapbook-item ${m.span === 2 ? 'span-2' : ''}`}
             style={{ '--rotate': m.rotate }}
             initial={{ opacity: 0, y: 30, rotate: 0 }}
             animate={{ opacity: 1, y: 0, rotate: parseFloat(m.rotate) }}
-            transition={{ delay: 0.15 * i, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+            transition={{ delay: 0.1 * i, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+            onClick={() => setActivePhotoIndex(i)}
+            role="button"
+            tabIndex={0}
+            aria-label={`View ${m.caption}`}
+            onKeyDown={(e) => { if (e.key === 'Enter') setActivePhotoIndex(i); }}
           >
-            <img
-              src={m.photo}
-              alt={m.caption}
-              className="scrapbook-photo"
-              loading="lazy"
-            />
+            <div className="scrapbook-photo-wrapper">
+              {m.badge && <span className="scrapbook-badge">{m.badge}</span>}
+              <img
+                src={m.photo}
+                alt={m.caption}
+                className="scrapbook-photo"
+                style={{ objectPosition: m.objectPosition || 'center 15%' }}
+                loading="lazy"
+              />
+              <span className="scrapbook-zoom-hint">🔍 Tap</span>
+            </div>
             <span className="scrapbook-caption">{m.caption}</span>
           </motion.div>
         ))}
       </div>
+
+      {/* Fullscreen Photo Lightbox Modal */}
+      <AnimatePresence>
+        {activePhoto && (
+          <motion.div
+            className="photo-lightbox-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setActivePhotoIndex(null)}
+          >
+            <motion.div
+              className="photo-lightbox-container"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="photo-lightbox-close"
+                onClick={() => setActivePhotoIndex(null)}
+                aria-label="Close photo preview"
+              >
+                ✕
+              </button>
+
+              <div className="photo-lightbox-img-wrap">
+                <img
+                  src={activePhoto.photo}
+                  alt={activePhoto.caption}
+                  className="photo-lightbox-img"
+                />
+              </div>
+
+              <div className="photo-lightbox-info">
+                <span className="photo-lightbox-caption">{activePhoto.caption}</span>
+                <div className="photo-lightbox-nav">
+                  <span className="photo-lightbox-counter">{activePhotoIndex + 1} / {memories.length}</span>
+                  <button
+                    className="photo-lightbox-nav-btn"
+                    onClick={showPrevPhoto}
+                    aria-label="Previous photo"
+                  >
+                    ←
+                  </button>
+                  <button
+                    className="photo-lightbox-nav-btn"
+                    onClick={showNextPhoto}
+                    aria-label="Next photo"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.button
         className="btn btn-primary"
