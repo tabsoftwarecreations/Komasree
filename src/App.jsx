@@ -1,11 +1,15 @@
 // src/App.jsx
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import confetti from 'canvas-confetti';
 import './index.css';
 import { openingMessage, debuggingStatus, finalMessage, birthdayRevealContent } from './data/birthdayContent';
 import FriendshipSimulator from './components/simulator/FriendshipSimulator';
 import OperationSaveAbdul from './components/game/OperationSaveAbdul';
+import hencyPhoto from '../pics/Hency Raj Face.jpg';
+import srujanPhoto from '../pics/Srujan Kumar Face.jpeg';
+import manikanthaPhoto from '../pics/Manikantha Face.png';
+import prajwalPhoto from '../pics/Prajwal Face.jpeg';
 
 // ─── Floating Particles ─────────────────────────
 // Pre-generate particle configs outside of render to keep it pure
@@ -561,25 +565,37 @@ function PersonalLetter({ goNext }) {
 // ════════════════════════════════════════════════════════════
 const colleagueWishes = [
   {
-    name: 'The Office Gang',
-    role: 'Your Favorite Colleagues',
-    avatar: '👥',
-    avatarBg: 'linear-gradient(135deg, #FFB8D4, #D4C2FF)',
-    text: 'Happy Birthday, Koma! The office is never boring when you\'re around. Keep being the amazing person you are! 🎉',
+    id: 'hency-raj',
+    name: 'Hency Raj',
+    role: 'Office Colleague',
+    photo: hencyPhoto,
+    cornerIcon: '✨',
+    message: 'Happy Birthday! 🎂❤️ Wishing you lots of happiness, success, and beautiful moments ahead. Keep smiling and enjoy your special day! 🥳✨',
   },
   {
-    name: 'Team Leader',
-    role: 'Your Patient Team Lead',
-    avatar: '👨‍💼',
-    avatarBg: 'linear-gradient(135deg, #94DBFF, #D4C2FF)',
-    text: 'Happy Birthday, Komasree! May this year bring you fewer bugs and more successful deployments. Also, please stop breaking the build. 😂',
+    id: 'srujan-kumar',
+    name: 'Srujan Kumar',
+    role: 'Office Colleague',
+    photo: srujanPhoto,
+    cornerIcon: '🫶🏻',
+    greeting: '🎂❤️ Happy Birthday to my Sister by Heart! 🫶🏻✨',
+    message: '“Not every sister is related by blood; some are connected by heart. ❤️ You may not be my real sister by birth, but you will always be my sister by love. 🥹💗 May your life be filled with happiness, love, success, and endless smiles. No matter where life takes us, you will always have a special place in my heart. 🫂',
   },
   {
-    name: 'The Chai Group',
-    role: 'Your Daily Chai Partners',
-    avatar: '☕',
-    avatarBg: 'linear-gradient(135deg, #FFF3D1, #FFB8D4)',
-    text: 'Birthday cheers to the one who makes every chai break worth looking forward to! You deserve the world, Koma. 💗',
+    id: 'manikantha',
+    name: 'Manikantha',
+    role: 'Office Colleague',
+    photo: manikanthaPhoto,
+    cornerIcon: '🎂',
+    message: '“May life bring you peace, success, and endless reasons to smile. Wishing you many more happy returns of the day!”',
+  },
+  {
+    id: 'prajwal',
+    name: 'Prajwal',
+    role: 'Office Colleague',
+    photo: prajwalPhoto,
+    cornerIcon: '💖',
+    message: '“Happy Birthday, Komasree! 🎂💖 Wishing you a year filled with happiness, exciting opportunities, good health, and countless reasons to smile. May all your hard work bring you success, and may every new day bring something beautiful into your life. Keep shining, keep smiling, and enjoy every moment of your special day! 🥳✨”',
   },
 ];
 
@@ -597,22 +613,38 @@ function ColleagueWishes({ goNext }) {
       <div className="wishes-grid" style={{ position: 'relative', zIndex: 1 }}>
         {colleagueWishes.map((wish, i) => (
           <motion.div
-            key={i}
+            key={wish.id}
             className="wish-card"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.15 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
+            <span className="wish-card-corner-icon" aria-hidden="true">{wish.cornerIcon}</span>
             <div className="wish-card-header">
-              <div className="wish-avatar" style={{ background: wish.avatarBg }}>
-                {wish.avatar}
+              <div className="wish-photo-container">
+                <div className="wish-photo-frame">
+                  <img
+                    src={wish.photo}
+                    alt={wish.name}
+                    className="wish-photo"
+                    loading="lazy"
+                  />
+                </div>
+                <span className="wish-photo-sparkle" aria-hidden="true">🌸</span>
               </div>
-              <div>
+              <div className="wish-header-info">
                 <div className="wish-name">{wish.name}</div>
                 <div className="wish-role">{wish.role}</div>
               </div>
             </div>
-            <p className="wish-text">"{wish.text}"</p>
+
+            {wish.greeting && (
+              <div className="wish-greeting-distinct">
+                {wish.greeting}
+              </div>
+            )}
+
+            <p className="wish-text">{wish.message}</p>
           </motion.div>
         ))}
       </div>
